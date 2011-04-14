@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 
 ###
-# FILE: tomcat-check.pl (14/Apr/2011)
+# FILE: tomcat-check.pl
 # DESC: Do checks against tomcat parsing the /manager xml output
 # WARNING: Tested with Apache Tomcat 6.0.29
 # AUTHOR: Olaf Reitmaier Veracierta <olafrv@gmail.com>
