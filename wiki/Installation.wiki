@@ -7,11 +7,11 @@
 
 */usr/bin/tomcat-check.pl*
 
-   The main perl script (daemon), containing at least something like this:
+The main perl script (daemon), containing at least something like this:
 
 {{{
 <?xml version="1.0" encoding="utf-8"?>
-<servers cycle="20" syslog="on" daemon="on" debug="off" debuglevel="2" mail="off">
+<servers cycle="20" syslog="on" daemon="on" debug="off" debuglevel="2" mail="n">
   <server ip="192.168.1.1" port="8080" user="admin" password="123456">
     <checks>
       <check number="1" command="status" param="requestProcessingTime" type="range" min="0" max="30000">
@@ -33,8 +33,6 @@
     </checks>
   </server>
  </servers>
-
-
 ̣}}}
 
 
