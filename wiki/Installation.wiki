@@ -40,8 +40,6 @@ The _structure_ of the file is just like this:
 }}}
 
 
-=Temporal Files=
-
 ==/usr/bin/tomcat-check.pl==
 
 The main perl script (daemon). Permission of this file must be 0755 with owner and group equal to *root*.
@@ -51,6 +49,8 @@ To run the daemon executes as root after creating the configuration file:
 {{{
 # tomcat-check.pl
 }}} 
+
+=Temporal Files=
 
 ==/var/run/tomcat-check.pid==
 
