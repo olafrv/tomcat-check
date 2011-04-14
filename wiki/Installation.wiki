@@ -1,7 +1,7 @@
 #summary The installation, configuration and running procedure
 #labels Featured,Phase-Deploy
 
-= Files =
+= Program Configuration Files =
 
 ==/etc/tomcat-check.xml==
 
@@ -42,7 +42,7 @@ The _structure_ of the file is just like this:
 
 
 
-*/usr/bin/tomcat-check.pl*
+==/usr/bin/tomcat-check.pl==
 
 The main perl script (daemon). Permission of this file must be 0755 with owner and group equal to *root*.
 
@@ -52,11 +52,11 @@ To run the daemon executes as root after creating the configuration file:
 # tomcat-check.pl
 }}} 
 
-*/var/run/tomcat-check.pid*
+==/var/run/tomcat-check.pid==
 
 The tomcat-check process pid file.
 
-*/tmp/tomcat-check-status.xml*
+==/tmp/tomcat-check-status.xml==
 
 A temporal file to store the output downloaded from Apache Tomcat Manager *[http://user:password@host:port/manager/status?XML=true]* each time a check is performed by the main perl script.
 
