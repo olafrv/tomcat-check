@@ -56,7 +56,7 @@ The _structure_ of the file is just like this:
 
 *checks*: is a grouping tag for checks, no attributes present.
 
-*check*
+*check*: the check to be performed on tomcat instance.
   * *_number_*: numeric id of the check.
   * *_command_*: command to execture in the manager, for now just "status".
   * *_param_*: parameter from the worker request from the XML ouput from Apache Tomcat Manager web interface.
@@ -64,7 +64,7 @@ The _structure_ of the file is just like this:
   * *_min_*: if type="range" the min value is bottom limit (param must be greater or equal).
   * *_max_*: if type="range" the max value is the top limit (param less or equal).
 
-*alarm*
+*alarm*: who must be alarm?.
   * *_mailto_*: comma separated list of mail address to alarm when check fails.
 
 
