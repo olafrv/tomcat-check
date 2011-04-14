@@ -1,0 +1,11 @@
+#summary The tomcat-check project overview
+
+=Overview=
+
+*tomcat-check* perl daemon-script checks periodically [http://tomcat.apache.org/ Apache Tomcat] processes status, performs some comparisons and then triggers some alarms (syslog and mail messages to sysadmins).
+
+The processes status of Apache Tomcat are checked using the builtin Apache Tomcat HTTP monitoring interface called [http://tomcat.apache.org/tomcat-6.0-doc/manager-howto.html Manager].
+
+Usually this interface output HTML but with the undocumented [http://svn.apache.org/repos/asf/tomcat/tc6.0.x/trunk/java/org/apache/catalina/manager/StatusManagerServlet.java but active in the code of StatusManagerServlet.java] functionality to output _well formed XML_ with the manager status data, *tomcat-check* parses this _XML_ to do its job. 
+
+*tomcat-check* can be _complemented_ with the google code project *[http://code.google.com/p/psi-probe/ psi-probe]* an enhanced replacement for Apache Tomcat Manager.
