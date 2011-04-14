@@ -5,9 +5,9 @@
 
 */etc/tomcat-check.xml*
 
-   The well formed XML configuration file.  Download an example [http://tomcat-check.googlecode.com/files/tomcat-check.xml here].
+The well formed XML configuration file.  Download an example [http://tomcat-check.googlecode.com/files/tomcat-check.xml here].
 
-   The _structure_ of the file is just like this:
+The _structure_ of the file is just like this:
 
 {{{
 
@@ -38,7 +38,7 @@
 }}}
 
 
-   Permission of this file must be *0770* with owner and group equal to *root*, this is because in general it include Apache Tomcat Manager access passwords.
+Permission of this file must be *0770* with owner and group equal to *root*, this is because in general it include Apache Tomcat Manager access passwords.
 
 
 */usr/bin/tomcat-check.pl*
@@ -57,9 +57,9 @@ The tomcat-check process pid file.
 
 */tmp/tomcat-check-status.xml*
 
-   A temporal file to store the output downloaded from Apache Tomcat Manager *[http://user:password@host:port/manager/status?XML=true]* each time a check is performed by the main perl script.
+A temporal file to store the output downloaded from Apache Tomcat Manager *[http://user:password@host:port/manager/status?XML=true]* each time a check is performed by the main perl script.
 
-   The _structure_ of the file is just like this:
+The _structure_ of the file is just like this:
 
 {{{
 
