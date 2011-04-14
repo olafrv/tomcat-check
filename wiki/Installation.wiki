@@ -60,7 +60,7 @@ The _structure_ of the file is just like this:
   * *_number_*: numeric id of the check.
   * *_command_*: command to execture in the manager, for now just "status".
   * *_param_*: parameter from the worker request from the XML ouput from Apache Tomcat Manager web interface.
-  * *_type_*: type of value to compare with the param, for now just "range".
+  * *_type_*: type of value to compare with the param, for now just "range" meaning the *normal* param range of values (min,max).
   * *_min_*: if type="range" the min value is bottom limit (param must be greater or equal).
   * *_max_*: if type="range" the max value is the top limit (param less or equal).
 
