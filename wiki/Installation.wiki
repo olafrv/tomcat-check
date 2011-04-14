@@ -51,7 +51,7 @@ The _structure_ of the file is just like this:
 *server*: contains the list of checks to performed.
   * *_ip_* is IP address of the tomcat instance.
   * *_port_* is the TCP port of the tomcat instance.
-  * *_user_* is the user with manager rol in the tomcat configuration file <tomcat-install-dir>/conf/tomcat-users.xml 
+  * *_user_* is the user with manager rol in the tomcat configuration file _/conf/tomcat-users.xml_.
   * *_password_* is the password for the user.
 
 *checks*
