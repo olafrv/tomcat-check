@@ -7,7 +7,7 @@
 
 */usr/bin/tomcat-check.pl*
 
-The main perl script (daemon).
+   The main perl script (daemon).
 
 */etc/tomcat-check.xml*
 
