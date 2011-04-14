@@ -1,0 +1,6 @@
+#summary How it Works
+#labels Featured,Phase-Design
+
+= Figure: "How it works"=
+
+http://tomcat-check.googlecode.com/files/tomcat-check-howitworks.jpg
