@@ -42,17 +42,17 @@ The _structure_ of the file is just like this:
 ===XML Tags and Attributes===
 
 *servers*: contains the list of tomcat server instances to check. 
-  * *_cycle_* is the number of second after all check must be performed.
-  * *_syslog_* whether or not to send ouput to syslog.
-  * *_daemon_* whether or not to run in background as a daemon.
-  * *_debug_* whether or not to print debug messages.
-  * *_debuglevel_* from 0 to 10.
+  * *_cycle_*: number of seconds after all check must be performed.
+  * *_syslog_*: whether or not to send ouput to syslog.
+  * *_daemon_*: whether or not to run in background as a daemon.
+  * *_debug_*: whether or not to print debug messages.
+  * *_debuglevel_*: 0 to 10.
 
 *server*: contains the list of checks to performed.
-  * *_ip_* is IP address of the tomcat instance.
-  * *_port_* is the TCP port of the tomcat instance.
-  * *_user_* is the user with manager rol in the tomcat configuration file _/conf/tomcat-users.xml_.
-  * *_password_* is the password for the user.
+  * *_ip_*: IP address of the tomcat instance.
+  * *_port_*: TCP port of the tomcat instance.
+  * *_user_*: user name with manager rol in the tomcat configuration file _/conf/tomcat-users.xml_.
+  * *_password_*: is the password for the user.
 
 *checks*
 
