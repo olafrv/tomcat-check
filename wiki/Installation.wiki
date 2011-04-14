@@ -1,7 +1,7 @@
 #summary The installation, configuration and running procedure
 #labels Featured,Phase-Deploy
 
-= Program Configuration Files =
+= Program Files =
 
 ==/etc/tomcat-check.xml==
 
@@ -40,7 +40,7 @@ The _structure_ of the file is just like this:
 }}}
 
 
-
+=Temporal Files=
 
 ==/usr/bin/tomcat-check.pl==
 
