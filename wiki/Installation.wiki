@@ -15,7 +15,7 @@ The main perl script (daemon).
 
 */tmp/tomcat-check-status.xml*
 
-   A temporal file to store the output downloaded from Apache Tomcat Manager via HTTP each time a check is performed by the main perl script.
+   A temporal file to store the output downloaded from Apache Tomcat Manager via HTTP each time a check is performed by the main perl script.  The URL to download this file is http://user:password@host:port/manager/status?XML=true
 
 
 
