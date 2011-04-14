@@ -14,7 +14,7 @@ The _structure_ of the file is just like this:
 {{{
 
 <?xml version="1.0" encoding="utf-8"?>
-<servers cycle="20" syslog="on" daemon="on" debug="off" debuglevel="2" mail="n">
+<servers cycle="20" syslog="on" daemon="on" debug="off" debuglevel="2" mail="on">
   <server ip="192.168.1.1" port="8080" user="admin" password="123456">
     <checks>
       <check number="1" command="status" param="requestProcessingTime" type="range" min="0" max="30000">
@@ -41,10 +41,19 @@ The _structure_ of the file is just like this:
 
 ===XML Tags and Attributes===
 
-*servers*
-*server*
+*servers*: contains the list of tomcat server instances to check. 
+  _cycle[0-n]_ is the number of second after all check must be performed.
+  _syslog[on,off]_ whether or not to send ouput to syslog.
+  _daemon[on,off]_ whether or not to run in background as a daemon.
+  _debug[on,off] whether or not to print debug messages.
+  _debuglevel[0-10].
+
+*server*: contains the 
+
 *checks*
+
 *check*
+
 *alarm*
 
 ==/usr/bin/tomcat-check.pl==
