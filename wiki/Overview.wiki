@@ -1,4 +1,5 @@
 #summary The tomcat-check project overview
+#labels Featured,Phase-Requirements
 
 =Overview=
 
@@ -9,3 +10,6 @@ The processes status of Apache Tomcat are checked using the builtin Apache Tomca
 Usually this interface output HTML but with the undocumented [http://svn.apache.org/repos/asf/tomcat/tc6.0.x/trunk/java/org/apache/catalina/manager/StatusManagerServlet.java but active in the code of StatusManagerServlet.java] functionality to output _well formed XML_ with the manager status data, *tomcat-check* parses this _XML_ to do its job. 
 
 *tomcat-check* can be _complemented_ with the google code project *[http://code.google.com/p/psi-probe/ psi-probe]* an enhanced replacement for Apache Tomcat Manager.
+
+
+Also you can see last *tomcat-check*  SVN trunk *[http://code.google.com/p/tomcat-check/source/browse/trunk/ source code]* licensed under GNU/GPL v3 or later license.
