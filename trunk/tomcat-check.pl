@@ -22,85 +22,13 @@ use File::Basename;
 use Sys::Hostname;
 use Fcntl ':mode';
 
-
-my $config_file_name = "/etc/tomcat-check/tomcat-check.xml";
-my $config = undef;
-
-if (-e $config_file_name){
-    my @mode = stat($config_file_name);
-    my $u_mode = ($mode[2] & S_IRWXU) >> 6;
-    my $g_mode = ($mode[2] & S_IRWXG) >> 3;
-    my $o_mode = ($mode[2] & S_IRWXO);
-    if ($u_mode == 7 && $g_mode == 0 && $o_mode==0 && $mode[4]==0 && $mode[5]==0){
-        $config = XMLin($config_file_name);
-    }else{
-        print "Wrong $config_file_name permissions must be u:root,g:root,0700\n";
-        exit 1;
-    }
-}else{
-    print "None config file '$config_file_name' exists\n";
-    exit 1;
-}
-
-
 my $continue = 1; # Flag to stop thread in daemon mode 
-my $daemon = $config->{daemon} eq "on" ? 1 : 0; # run as daemon?
-
-my $pidfile = undef; # /var/run/tomcat-check.pid
-
-if ($daemon){
-    
-    my $daemon_name = substr(basename($0), 0, length(basename($0))-3); 
-
-    if (-e "/var/run/$daemon_name.pid"){
-        print "PID file exists, already running!\n";    
-        exit 1;
-    }
-
-    Proc::Daemon::Init; # Prepare to fork and daemonize
-
-    $SIG{INT} = $SIG{TERM} = $SIG{HUP} = sub { $continue = 0 }; # Signal catching
-    $SIG{PIPE} = 'ignore';
-
-    $pidfile = Proc::PID::File->running(name => $daemon_name); # Pid file creating
-
-}
-
-# Navigate to servers in XML config
-my $servers = $config->{server}; # 
-$servers = ref($servers) eq 'ARRAY' ? $servers : [$servers];
-
-my $cycle = $config->{cycle} ? 3 : $config->{cycle}; # cycle time of main thread in seconds?
-
-my $debug = $config->{debug} eq "on" ? 1 : 0; # print debug messages?
-
-my $debuglevel = $config->{debuglevel} eq "" ? 0 : int($config->{debuglevel}); # what debug messages should be printed?
-
-my $syslog = $config->{syslog} eq "on" ? 1 : 0; # log to syslog?
-
-my $mail = $config->{mail} eq "on" ? 1 : 0; # send mails?
-
+my $debug = 0; # By default don't show debug messages
+my $debuglevel = 0; # By default use the basic debug level
+my $syslog = 1;  # By default write to syslog
+my $mail = 1; # By default send email
+my $cycle = 20; # Run checks every 20 seconds cycle
 my $failed_checks = {}; # Failed checks for all commands
-$failed_checks->{status} = {}; # Failed checks for the status command
-
-if ($debug && !$syslog && $debuglevel>1) { doLog("info", "Here is the configuration:", $config) };
-
-while ($continue){    
-    foreach my $server (@$servers){
-            check_server($server);
-    }
-        if ($daemon){
-            sleep($cycle);
-        }else{
-        $continue = 0;
-    }
-}
-
-if ($daemon){
-    $pidfile->release();
-}
-
-exit 0;
 
 sub check_server{
 
@@ -143,7 +71,7 @@ sub doCheck{
            if ($debug) {doLog("info", "Downloading /manager/status?XML=true", undef)};
                doCheckStatus($url . "/manager/status?XML=true", $check);
            }else{
-               doLog("error","Wrong command '$command'.", undef);
+               doLog("err","Wrong command '$command'.", undef);
                exit 2;
         }
 }
@@ -170,7 +98,7 @@ sub doCheckStatus{
        if (is_error(getstore($url,$file))){
                $alarm_subject = hostname() . " - TOMCAT ERROR - :s - Can't download check URL";
                $alarm_msg = "Server " . $check_server  ." is down or can't download the URL: $url";
-               doLog("error", $alarm_msg, undef);
+               doLog("err", $alarm_msg, undef);
                if ($alarm_mailto ne "") { doAlarmMail($alarm_mailto, $alarm_subject, "$alarm_msg\n", undef) };
        }else{
 
@@ -272,14 +200,14 @@ sub doCheckStatus{
                    if ($alarm_msgs ne "")
                    {
                    # Failed checks grow and alarm messages are generated for each one
-                           $alarm_subject = "$check_server - TOMCAT [$connector] - :( - ALARM!!!";
+                           $alarm_subject = "$check_server - TOMCAT [$connector] -  :(  - ALARM!!!";
                            doLog("info", $alarm_subject, undef);
                            if ($alarm_mailto ne "") { doAlarmMail($alarm_mailto, $alarm_subject, "$alarm_msgs\n", undef) };
                    }
                    elsif (($last_failed_checks_total > 0) && ($current_failed_checks_total == 0))
                    {
                    # There no alarm messages and failed checks to zero    
-                           $alarm_subject = "$check_server - TOMCAT [$connector] - :) - OK.";
+                           $alarm_subject = "$check_server - TOMCAT [$connector] -  :)  - OK.";
                            doLog("info", $alarm_subject, undef);
                            if ($alarm_mailto ne "") { doAlarmMail($alarm_mailto, $alarm_subject, "All is ok.-\n", undef) };
                    }
@@ -288,15 +216,11 @@ sub doCheckStatus{
 }
 
 
-sub doAlarmMail(){
+sub doAlarmMail{
     my $alarm_mailto = $_[0];
         my $alarm_subject = $_[1];
     my $alarm_msg = $_[2];
         my $file = $_[3];
-
-    if ($debug) { 
-        doLog("info","Sending mail to '$alarm_mailto'", undef);
-    };
 
         my $msg = MIME::Lite->new(From=>"root\@" . hostname(),
                                     To=>$alarm_mailto,
@@ -314,22 +238,21 @@ sub doAlarmMail(){
     }
 
     if ($mail){
-            if ($msg->send){
-            if ($debug){
-                doLog("info","Mail has been sent.", undef);
-            }else{
-                doLog("error", "Mail can't be sent", undef);
-            }
-        }
+        $msg->send();
+            if ($msg->last_send_successful()){
+            doLog("info","Sent mail to '$alarm_mailto'", undef);
+        }else{
+            doLog("err", "Can't send mail to '$alarm_mailto'", undef);
+        }        
     }else{
         if ($debug) { 
-            doLog("info","Mailing is disabled.", undef);
+            doLog("info","Mailing is disabled, discarded mail to '$alarm_mailto'.", undef);
         }
     }
 }
 
 
-sub doLog(){
+sub doLog{
         my $priority = $_[0] eq "" ? "info" : $_[0]; # info,error
         my $msg = $_[1]; # string
         my $obj = $_[2]; # undef or ref
@@ -337,6 +260,7 @@ sub doLog(){
         $msg = $msg . " " . Dumper($obj);
     }
         if ($syslog){
+        print "$priority\n";
                 openlog ("tomcat-check", "cons,pid", "syslog");
                 syslog ("$priority|syslog", "%s", $msg);
                 closelog;
@@ -346,10 +270,77 @@ sub doLog(){
 }
 
 
-sub getTimeString(){
+sub getTimeString{
        my ($sec,$min,$hour,$mday,$mon,$year,$wday,
        $yday,$isdst)=localtime(time);
        my $result = sprintf "%4d-%02d-%02d %02d:%02d:%02d",$year+1900,$mon+1,$mday,$hour,$min,$sec;
        return $result;
 }
+
+my $config_file_name = "/etc/tomcat-check.xml";
+my $config = undef;
+
+if (-e $config_file_name){
+    my @mode = stat($config_file_name);
+    my $u_mode = ($mode[2] & S_IRWXU) >> 6;
+    my $g_mode = ($mode[2] & S_IRWXG) >> 3;
+    my $o_mode = ($mode[2] & S_IRWXO);
+    if ($u_mode == 7 && $g_mode == 0 && $o_mode==0 && $mode[4]==0 && $mode[5]==0){
+        $config = XMLin($config_file_name);
+    }else{
+        print "Wrong $config_file_name permissions must be u:root,g:root,0700\n";
+        exit 1;
+    }
+}else{
+    print "None config file '$config_file_name' exists\n";
+    exit 1;
+}
+
+my $daemon = $config->{daemon} eq "on" ? 1 : 0; # run as daemon?
+
+my $pidfile = undef; # /var/run/tomcat-check.pid
+
+if ($daemon){
+    my $daemon_name = substr(basename($0), 0, length(basename($0))-3); 
+    if (-e "/var/run/$daemon_name.pid"){
+        print "PID file exists, already running!\n";    
+        exit 1;
+    }
+    Proc::Daemon::Init; # Prepare to fork and daemonize
+    $SIG{INT} = $SIG{TERM} = $SIG{HUP} = sub { $continue = 0 }; # Signal catching
+    $SIG{PIPE} = 'ignore';
+    $pidfile = Proc::PID::File->running(name => $daemon_name); # Pid file creating
+}
+
+my $servers = $config->{server}; # Navigate to servers in XML config
+$servers = ref($servers) eq 'ARRAY' ? $servers : [$servers];
+
+$cycle = $config->{cycle} ? 3 : $config->{cycle}; # cycle time of main thread in seconds?
+$debug = $config->{debug} eq "on" ? 1 : 0;
+$debuglevel = $config->{debuglevel} eq "" ? 0 : int($config->{debuglevel});
+$syslog = $config->{syslog} eq "on" ? 1 : 0;
+$mail = $config->{mail} eq "on" ? 1 : 0;
+
+$failed_checks->{status} = {}; # Failed checks for the status command
+
+if ($debug && !$syslog && $debuglevel>1) { 
+    doLog("info", "Here is the configuration:", $config);
+}
+
+while ($continue){    
+    foreach my $server (@$servers){
+            check_server($server);
+    }
+        if ($daemon){
+            sleep($cycle);
+        }else{
+        $continue = 0;
+    }
+}
+
+if ($daemon){
+    $pidfile->release();
+}
+
+exit 0;
 
