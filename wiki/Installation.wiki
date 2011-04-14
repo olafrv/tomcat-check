@@ -1,7 +1,7 @@
 #summary The installation, configuration and running procedure
 #labels Featured,Phase-Deploy
 
-= Program Files =
+= 1. Program Files =
 
 ==/etc/tomcat-check.xml==
 
@@ -51,7 +51,7 @@ To run the daemon executes as root after creating the configuration file:
 
 
 
-=Temporal Files=
+=2. Temporal Files=
 
 ==/var/run/tomcat-check.pid==
 
