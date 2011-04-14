@@ -7,14 +7,11 @@
 
 */usr/bin/tomcat-check.pl*
 
-The main perl script (daemon), containing at least something like this:
-
-[http://tomcat-check.googlecode.com/files/tomcat-check.xml Download an Example Here]
-
+The main perl script (daemon).
 
 */etc/tomcat-check.xml*
 
-   The well formed XML configuration file.
+   The well formed XML configuration file.  Download an example [http://tomcat-check.googlecode.com/files/tomcat-check.xml here].
 
 */tmp/tomcat-check-status.xml*
 
