@@ -3,9 +3,11 @@
 
 = Files =
 
-*/etc/tomcat-check.xml*
+==/etc/tomcat-check.xml==
 
 The well formed XML configuration file.  Download an example [http://tomcat-check.googlecode.com/files/tomcat-check.xml here].
+
+Permission of this file must be *0770* with owner and group equal to *root*, this is because in general it include Apache Tomcat Manager access passwords.
 
 The _structure_ of the file is just like this:
 
@@ -38,7 +40,6 @@ The _structure_ of the file is just like this:
 }}}
 
 
-Permission of this file must be *0770* with owner and group equal to *root*, this is because in general it include Apache Tomcat Manager access passwords.
 
 
 */usr/bin/tomcat-check.pl*
