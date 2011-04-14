@@ -1,4 +1,4 @@
-#summary The installation procedure
+#summary The installation, configuration and running procedure
 #labels Featured
 
 = Files =
