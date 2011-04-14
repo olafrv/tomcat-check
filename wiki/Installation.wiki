@@ -7,6 +7,16 @@
 
    The main perl script (daemon). Permission of this file must be 0755 with owner and group equal to *root*.
 
+   To run the daemon executes as root:
+
+{{{
+# tomcat-check.pl
+}}} 
+
+*/var/run/tomcat-check.pid*
+
+  The tomcat-check process pid file.
+
 */etc/tomcat-check.xml*
 
    The well formed XML configuration file.  Download an example [http://tomcat-check.googlecode.com/files/tomcat-check.xml here].
@@ -74,13 +84,3 @@
 </status>
 
 }}}
-
-*/var/run/tomcat-check.pid*
-
-  The tomcat-check process pid file.
-
-= Running = 
-
-{{{
-# tomcat-check.pl
-}}} 
