@@ -39,6 +39,14 @@ The _structure_ of the file is just like this:
 
 }}}
 
+===XML Tags and Attributes===
+
+*servers*
+*server*
+*checks*
+*check*
+*alarm*
+
 ==/usr/bin/tomcat-check.pl==
 
 The main perl script (daemon). Permission of this file must be 0755 with owner and group equal to *root*.
