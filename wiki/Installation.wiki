@@ -1,9 +1,6 @@
-#summary Installation.
+#summary The installation and configuration procedure
 
-= Introduction =
-
-
-= Files =
+= Installation Files =
 
 */usr/bin/tomcat-check.pl*
 
@@ -17,9 +14,8 @@
 
    A temporal file to store the output downloaded from Apache Tomcat Manager *[http://user:password@host:port/manager/status?XML=true]* each time a check is performed by the main perl script.
 
+= Running = 
 
-
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+{{{
+# tomcat-check.pl
+}}} 
