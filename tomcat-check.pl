@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 
 ###
-# FILE: tomcat-check.pl (12/04/2011)
+# FILE: tomcat-check.pl
 # DESC: Check tomcat status for hanged up processes.
 # AUTHOR: Olaf Reitmaier Veracierta <olafrv@gmail.com>
 ##
