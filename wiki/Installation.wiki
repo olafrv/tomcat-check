@@ -5,11 +5,13 @@
 
 */usr/bin/tomcat-check.pl*
 
-   The main perl script (daemon).
+   The main perl script (daemon). Permission of this file must be 0755 with owner and group equal to *root*.
 
-*/etc/tomcat-check.xml*
+*/etc/tomcat-check/tomcat-check.xml*
 
    The well formed XML configuration file.  Download an example [http://tomcat-check.googlecode.com/files/tomcat-check.xml here].
+
+   Permission of this file must be *0770* with owner and group equal to *root*, this is because in general it include Apache Tomcat Manager access passwords.
 
 */tmp/tomcat-check-status.xml*
 
