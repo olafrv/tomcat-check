@@ -9,33 +9,7 @@
 
 The main perl script (daemon), containing at least something like this:
 
-{{{
-
-<?xml version="1.0" encoding="utf-8"?>
-<servers cycle="20" syslog="on" daemon="on" debug="off" debuglevel="2" mail="n">
-  <server ip="192.168.1.1" port="8080" user="admin" password="123456">
-    <checks>
-      <check number="1" command="status" param="requestProcessingTime" type="range" min="0" max="30000">
-        <alarm mailto="root@localhost"/>
-      </check>
-      <check number="2" command="status" param="requestProcessingTime" type="range" min="0" max="60000">
-        <alarm mailto="root@localhost,admin@localhost"/>
-      </check>
-    </checks>
-  </server>
-  <server ip="192.168.1.2" port="8080" user="admin" password="456789">
-    <checks>
-      <check number="1" command="status" param="requestProcessingTime" type="range" min="0" max="30000">
-        <alarm mailto="root@localhost"/>
-      </check>
-      <check number="2" command="status" param="requestProcessingTime" type="range" min="0" max="60000">
-        <alarm mailto="root@localhost,admin@localhost"/>
-      </check>
-    </checks>
-  </server>
- </servers>
-
-̣}}}
+[http://tomcat-check.googlecode.com/files/tomcat-check.xml Download an Example Here]
 
 
 */etc/tomcat-check.xml*
