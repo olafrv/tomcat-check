@@ -1,6 +1,7 @@
-#summary The installation and configuration procedure
+#summary The installation procedure
+#labels Featured
 
-= Installation Files =
+= Files =
 
 */usr/bin/tomcat-check.pl*
 
