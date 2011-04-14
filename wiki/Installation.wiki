@@ -11,7 +11,7 @@
 
    The well formed XML configuration file.  Download an example [http://tomcat-check.googlecode.com/files/tomcat-check.xml here].
 
-   The structure of the file is just like this:
+   The _structure_ of the file is just like this:
 
 {{{
 
@@ -47,6 +47,33 @@
 */tmp/tomcat-check-status.xml*
 
    A temporal file to store the output downloaded from Apache Tomcat Manager *[http://user:password@host:port/manager/status?XML=true]* each time a check is performed by the main perl script.
+
+   The _structure_ of the file is just like this:
+
+{{{
+
+<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xsl" href="xform.xsl" ?>
+<status>
+  <jvm>
+    <memory free='526635632' total='1247674368' max='2386100224'/>
+  </jvm>
+  <connector name='http-8080'>
+    <threadInfo  maxThreads="-1" currentThreadCount="-1" currentThreadsBusy="-1" />
+    <requestInfo  maxTime="1219" processingTime="20939" requestCount="9213" errorCount="2" bytesReceived="0" bytesSent="28152767" />
+    <workers>
+       <worker  stage="S" requestProcessingTime="0" requestBytesSent="0" requestBytesReceived="0" remoteAddr="172.26.96.230" virtualHost="172.26.96.247" method="GET" currentUri="/manager/status" currentQueryString="XML=true" protocol="HTTP/1.1" />
+    </workers>
+  </connector>
+  <connector name='ajp-8009'>
+     <threadInfo  maxThreads="200" currentThreadCount="9" currentThreadsBusy="0" />
+     <requestInfo  maxTime="2120690" processingTime="7325693" requestCount="108185" errorCount="15353" bytesReceived="1590291" bytesSent="859328855" />
+     <workers>
+        <worker  stage="R" requestProcessingTime="0" requestBytesSent="0" requestBytesRecieved="0" remoteAddr="&#63;" virtualHost="&#63;" method="&#63;" currentUri="&#63;" currentQueryString="&#63;" protocol="&#63;" />
+     </workers>
+   </connector>
+</status>
+
+}}}
 
 */var/run/tomcat-check.pid*
 
