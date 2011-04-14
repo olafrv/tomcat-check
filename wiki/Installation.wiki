@@ -49,9 +49,9 @@ To run the daemon executes as root after creating the configuration file:
 # tomcat-check.pl
 }}} 
 
+----
 
-
-=2. Temporal Files=
+=Temporal Files=
 
 ==/var/run/tomcat-check.pid==
 
