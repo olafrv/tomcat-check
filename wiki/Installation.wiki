@@ -61,7 +61,7 @@ The _structure_ of the file is just like this:
 
 *check*: the check to be performed on tomcat instance.
   * *_number_*: numeric id of the check.
-  * *_command_*: command to execute in the manager: status (built-in /manager application xml output), [http://code.google.com/p/psi-probe/ psiprobe] application xml output).
+  * *_command_*: command to execute: status (built-in [http://tomcat.apache.org/tomcat-6.0-doc/manager-howto.html manager] application xml output), [http://code.google.com/p/psi-probe/ psi-probe] application xml output).
   * *_param_*: parameter from the worker request from the XML ouput from Apache Tomcat Manager web interface.
   * *_type_*: type of value to compare with the param, for now just "range" meaning the *normal* param range of values (min,max).
   * *_min_*: if type="range" the min value is bottom limit (param must be greater or equal).
@@ -120,7 +120,7 @@ For Apache Tomcat Manager *[http://user:password@host:port/manager/status?XML=tr
 
 }}}
 
-For [http://code.google.com/p/psi-probe/ psiprobe] application for Apache Tomcat *[http://user:password@host:port/probe/adm/quickcheck.xml.htm]* the _structure_ of the file is just like this:
+For [http://code.google.com/p/psi-probe/ psi-probe] application for Apache Tomcat *[http://user:password@host:port/probe/adm/quickcheck.xml.htm]* the _structure_ of the file is just like this:
 
 {{{
 <report>
