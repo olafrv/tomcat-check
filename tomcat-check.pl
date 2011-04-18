@@ -2,7 +2,9 @@
 
 ###
 # FILE: tomcat-check.pl
-# DESC: Do checks against tomcat parsing the /manager xml output
+# DESC: Do checks against tomcat parsing xml output from
+#       /manager (built-in) and /probe (psi-probe).
+#       
 # WARNING: Tested with Apache Tomcat 6.0.29
 # AUTHOR: Olaf Reitmaier Veracierta <olafrv@gmail.com>
 # LICENSE: GNU/GPL 3.0 or later
@@ -58,18 +60,118 @@ sub check_server{
 }
 
 sub doCheck{
-	my $url = $_[0]; # The root URL of tomcat
+	my $rootUrl = $_[0]; # The root URL of tomcat
+	my $lastUrl = undef; # The last part URL of tomcat
 	my $check = $_[1]; # The check to be done
 
 	my $command = $check->{command}; # The command to do the check
 
-	if ($command eq "status"){	
-	if ($debug) {doLog("info", "Downloading /manager/status?XML=true", undef)};
-		doCheckStatus($url . "/manager/status?XML=true", $check);
-	}else{
+	if ($command eq "status")
+	{	
+	   $lastUrl = "/manager/status?XML=true";
+		if ($debug) {
+			doLog("info", "Downloading $lastUrl", undef);
+		}
+		doCheckStatus($rootUrl . $lastUrl, $check);
+	}
+	elsif ($command eq "psiprobe")
+	{	
+	   $lastUrl = "/probe/adm/quickcheck.xml.htm";
+		if ($debug) {
+			doLog("info", "Downloading $lastUrl", undef);
+		}
+		doCheckPsiProbe($rootUrl . $lastUrl, $check);
+	}
+	else
+	{
 		doLog("err","Wrong command '$command'.", undef);
 		exit 2;
 	}
+}
+
+sub doCheckPsiProbe{
+	
+	my $url = $_[0];
+	my ($scheme, $auth, $path, $query, $frag) = uri_split($url);
+	my $check = $_[1];
+
+	my $check_number = $check->{number};
+	my $check_param = $check->{param};
+	my $check_min = $check->{min};
+	my $check_max = $check->{max};
+	my $check_value = $check->{value};
+	my $check_server = substr($auth, index($auth, '@')+1);
+
+	my $alarm_mailto = $check->{alarm}->{mailto};
+	my $alarm_subject = "";
+	my $alarm_msg = "";
+
+	my $file = "/tmp/tomcat-check-status.xml"; # TMP file to save XML output from Tomcat
+	
+	if (is_error(getstore($url,$file))){
+
+		$alarm_subject = hostname() . " - TOMCAT ERROR - :s - Can't download check URL";
+		$alarm_msg = "Server " . $check_server  ." is down or can't download the URL: $url";
+		doLog("err", $alarm_msg, undef);
+		if ($alarm_mailto ne "") { doAlarmMail($alarm_mailto, $alarm_subject, "$alarm_msg\n", undef) };
+
+	}else{
+
+		my $psiprobe = XMLin($file); # Load XML output from Tomcat /probe 
+	
+		my $last_failed_checks_total = 0; # Last server status check failures count
+		my $current_failed_checks_total = 0; # Current server status check failures count
+
+		# Navegate to the CDATA for entity of type "status"
+		my $psiprobe_ref = $psiprobe->{'status'};
+
+		if ($debug && !$syslog && $debuglevel>1) { doLog("info", "Variable \$psiprobe is ", $psiprobe)};
+
+		# Hash for check result by server of the check
+		if (!(defined $failed_checks->{psiprobe}->{"$check_server"})) { $failed_checks->{psiprobe}->{"$check_server"} = {} };
+		my $failed_checks_ref = $failed_checks->{psiprobe}->{"$check_server"};
+
+		if ($debug && !$syslog && $debuglevel>1) { doLog("info", "Variable \$failed_checks_ref", $failed_checks_ref)};
+
+		if ($psiprobe->{status} eq "OK")
+		{
+			if (defined $failed_checks_ref->{"$check_number"} 
+					&& $failed_checks_ref->{"$check_number"} ne "OK")
+			{
+				# Current check is OK and last check was not OK, alarm is OFF
+			   $alarm_subject = "$check_server - TOMCAT [psiprobe] -  :)  - OK.";
+				$alarm_msg = getTimeString() . " - srv:$check_server, chk:$check_number, psi-probe check returns OK.";
+				doLog("info", $alarm_subject, undef);
+				if ($alarm_mailto ne "") 
+				{ 
+					doAlarmMail($alarm_mailto, $alarm_subject, "$alarm_msg\n", undef);
+				}
+			}
+		}
+		else
+		{	
+			if (!(defined $failed_checks_ref->{"$check_number"})
+					|| $failed_checks_ref->{"check_number"} eq "OK")
+			{
+				# Current check is not OK but last check was OK, alarm is ON
+				$alarm_subject = "$check_server - TOMCAT [psiprobe] -  :(  - ALARM!!!";
+				$alarm_msg = getTimeString() . " - srv:$check_server, chk:$check_number, psi-probe check failed.";
+				doLog("info", $alarm_subject, undef);
+				if ($alarm_mailto ne "") { 
+					doAlarmMail($alarm_mailto, $alarm_subject, "$alarm_msg\n", undef);
+				}
+			}
+		}
+
+		# Save the last check status
+		$failed_checks_ref->{"$check_number"} =  $psiprobe->{status};
+
+		if ($debug && !$syslog && $debuglevel>1) { 
+			doLog("info", "Variable \$failed_checks_ref", $failed_checks_ref);
+		}
+
+	}
+
 }
 
 sub doCheckStatus{
@@ -119,11 +221,11 @@ sub doCheckStatus{
 
 			# Hash for check results by number of the check
 			if (!(defined $failed_checks_ref->{"$check_number"})) { $failed_checks_ref->{"$check_number"} = {} };
-				$failed_checks_ref = $failed_checks_ref->{"$check_number"};
+			$failed_checks_ref = $failed_checks_ref->{"$check_number"};
 
 			# Hash for check results by connector of the check
 			if (!(defined $failed_checks_ref->{"$connector"})) { $failed_checks_ref->{"$connector"} = {} };
-				$failed_checks_ref = $failed_checks_ref->{"$connector"};
+			$failed_checks_ref = $failed_checks_ref->{"$connector"};
 
 			foreach my $worker (@$tomcat_ref){
 
@@ -259,7 +361,7 @@ sub doLog{
 		$msg = $msg . " " . Dumper($obj);
 	}
 	if ($syslog){
-	print "$priority\n";
+		print "$priority\n";
 		openlog ("tomcat-check", "cons,pid", "syslog");
 		syslog ("$priority|syslog", "%s", $msg);
 		closelog;
@@ -295,12 +397,25 @@ if (-e $config_file_name){
 
 my $daemon = $config->{daemon} eq "on" ? 1 : 0; # run as daemon?
 
-my $pidfile = undef; # /var/run/tomcat-check.pid
+$cycle = $config->{cycle} ? 3 : $config->{cycle}; # cycle time of main thread in seconds?
+$debug = $config->{debug} eq "on" ? 1 : 0;
+$debuglevel = $config->{debuglevel} eq "" ? 0 : int($config->{debuglevel});
+$syslog = $config->{syslog} eq "on" ? 1 : ($daemon == 1 ? 1 : 0);
+$mail = $config->{mail} eq "on" ? 1 : 0;
 
+if ($debug && !$syslog && $debuglevel>1) { 
+	doLog("info", "Here is the configuration:", $config);
+}
+
+my $pidfile = undef; # /var/run/tomcat-check.pid
 if ($daemon){
 	my $daemon_name = substr(basename($0), 0, length(basename($0))-3); 
 	if (-e "/var/run/$daemon_name.pid"){
 		print "PID file exists, already running!\n";	
+		exit 1;
+	}
+	if (! -w "/var/run"){
+		print "Can't create PID file!\n";
 		exit 1;
 	}
 	Proc::Daemon::Init; # Prepare to fork and daemonize
@@ -309,20 +424,12 @@ if ($daemon){
 	$pidfile = Proc::PID::File->running(name => $daemon_name); # Pid file creating
 }
 
+# Failed checks per command
+$failed_checks->{status} = {};
+$failed_checks->{psiprobe} = {};
+
 my $servers = $config->{server}; # Navigate to servers in XML config
 $servers = ref($servers) eq 'ARRAY' ? $servers : [$servers];
-
-$cycle = $config->{cycle} ? 3 : $config->{cycle}; # cycle time of main thread in seconds?
-$debug = $config->{debug} eq "on" ? 1 : 0;
-$debuglevel = $config->{debuglevel} eq "" ? 0 : int($config->{debuglevel});
-$syslog = $config->{syslog} eq "on" ? 1 : 0;
-$mail = $config->{mail} eq "on" ? 1 : 0;
-
-$failed_checks->{status} = {}; # Failed checks for the status command
-
-if ($debug && !$syslog && $debuglevel>1) { 
-	doLog("info", "Here is the configuration:", $config);
-}
 
 while ($continue){	
 	foreach my $server (@$servers){
