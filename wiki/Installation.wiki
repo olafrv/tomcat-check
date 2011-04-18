@@ -33,6 +33,9 @@ The _structure_ of the file is just like this:
       <check number="2" command="status" param="requestProcessingTime" type="range" min="0" max="60000">
         <alarm mailto="root@localhost,admin@localhost"/>
       </check>
+      <check number="3" command="psiprobe">
+        <alarm mailto="root@localhost"/>
+      </check>
     </checks>
   </server>
  </servers>
@@ -58,7 +61,7 @@ The _structure_ of the file is just like this:
 
 *check*: the check to be performed on tomcat instance.
   * *_number_*: numeric id of the check.
-  * *_command_*: command to execture in the manager, for now just "status".
+  * *_command_*: command to execute in the manager: status (built-in /manager output, psiprobe (http://code.google.com/p/psi-probe/).
   * *_param_*: parameter from the worker request from the XML ouput from Apache Tomcat Manager web interface.
   * *_type_*: type of value to compare with the param, for now just "range" meaning the *normal* param range of values (min,max).
   * *_min_*: if type="range" the min value is bottom limit (param must be greater or equal).
