@@ -61,7 +61,7 @@ The _structure_ of the file is just like this:
 
 *check*: the check to be performed on tomcat instance.
   * *_number_*: numeric id of the check.
-  * *_command_*: command to execute in the manager: status (built-in /manager output, psiprobe (http://code.google.com/p/psi-probe/).
+  * *_command_*: command to execute in the manager: status (built-in /manager application xml output), psiprobe (http://code.google.com/p/psi-probe/ application xml output).
   * *_param_*: parameter from the worker request from the XML ouput from Apache Tomcat Manager web interface.
   * *_type_*: type of value to compare with the param, for now just "range" meaning the *normal* param range of values (min,max).
   * *_min_*: if type="range" the min value is bottom limit (param must be greater or equal).
@@ -91,9 +91,9 @@ The tomcat-check process pid file.
 
 ==/tmp/tomcat-check-status.xml==
 
-A temporal file to store the output downloaded from Apache Tomcat Manager *[http://user:password@host:port/manager/status?XML=true]* each time a check is performed by the main perl script.
+A temporal file to store the output downloaded and checked by the main perl script.
 
-The _structure_ of the file is just like this:
+For Apache Tomcat Manager *[http://user:password@host:port/manager/status?XML=true]* the _structure_ of the file is just like this:
 
 {{{
 
@@ -118,4 +118,12 @@ The _structure_ of the file is just like this:
    </connector>
 </status>
 
+}}}
+
+For psi-probe application for Apache Tomcat *[http://user:password@host:port/probe/adm/quickcheck.xml.htm]* the _structure_ of the file is just like this:
+
+{{{
+<report>
+	<status>OK</status>
+</report>
 }}}
