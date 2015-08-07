@@ -6,5 +6,5 @@ Checkout the [Wiki](https://github.com/olafrv/tomcat-check/tree/wiki) pages for 
 
 Also you can see last **tomcat-check**  SVN trunk **[source code](http://code.google.com/p/tomcat-check/source/browse/trunk/)** licensed under GNU/GPL v3 or later license.
 
-![http://tomcat-check.googlecode.com/files/tomcat-check-howitworks.jpg](http://tomcat-check.googlecode.com/files/tomcat-check-howitworks.jpg)
+![How It Works](https://raw.githubusercontent.com/olafrv/tomcat-check/master/wiki/howitworks.jpg)
 
