@@ -4,7 +4,7 @@
 
 Checkout the [Wiki](wiki) pages for an [overview](wiki/Overview.md) and more documentation about the **tomcat-check** project.
 
-Also you can see last **tomcat-check**  SVN trunk **[source code](http://code.google.com/p/tomcat-check/source/browse/trunk/)** licensed under GNU/GPL v3 or later license.
 
 ![How It Works](https://raw.githubusercontent.com/olafrv/tomcat-check/master/wiki/howitworks.jpg)
 
+All the tomcat-check code is licensed under GNU/GPL v3 or later license.
